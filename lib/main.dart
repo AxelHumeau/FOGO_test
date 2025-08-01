@@ -2,12 +2,12 @@
 // All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_blue_plus_example/blocs/bluetooth_adapter_cubit.dart';
 
-import 'screens/bluetooth_off_screen.dart';
+import 'widgets/bluetooth_off_dialog.dart';
 import 'screens/scan_screen.dart';
 
 void main() {
@@ -15,78 +15,32 @@ void main() {
   runApp(const FlutterBlueApp());
 }
 
-//
-// This widget shows BluetoothOffScreen or
-// ScanScreen depending on the adapter state
-//
-class FlutterBlueApp extends StatefulWidget {
+class FlutterBlueApp extends StatelessWidget {
   const FlutterBlueApp({Key? key}) : super(key: key);
 
   @override
-  State<FlutterBlueApp> createState() => _FlutterBlueAppState();
-}
-
-class _FlutterBlueAppState extends State<FlutterBlueApp> {
-  BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
-
-  late StreamSubscription<BluetoothAdapterState> _adapterStateStateSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    _adapterStateStateSubscription = FlutterBluePlus.adapterState.listen((state) {
-      _adapterState = state;
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _adapterStateStateSubscription.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    Widget screen = _adapterState == BluetoothAdapterState.on
-        ? const ScanScreen()
-        : BluetoothOffScreen(adapterState: _adapterState);
-
-    return MaterialApp(
-      color: Colors.lightBlue,
-      home: screen,
-      navigatorObservers: [BluetoothAdapterStateObserver()],
+    return BlocProvider(
+      create: (context) => BluetoothAdapterCubit(),
+      child: MaterialApp(
+        color: Colors.lightBlue,
+        home: BlocListener<BluetoothAdapterCubit, BluetoothAdapterState>(
+          listener: (context, state) {
+            if (state == BluetoothAdapterState.on) {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              return;
+            }
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return BluetoothOffDialog(adapterState: state);
+              },
+            );
+          },
+          child: ScanScreen(),
+        ),
+      ),
     );
-  }
-}
-
-//
-// This observer listens for Bluetooth Off and dismisses the DeviceScreen
-//
-class BluetoothAdapterStateObserver extends NavigatorObserver {
-  StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
-
-  @override
-  void didPush(Route route, Route? previousRoute) {
-    super.didPush(route, previousRoute);
-    if (route.settings.name == '/DeviceScreen') {
-      // Start listening to Bluetooth state changes when a new route is pushed
-      _adapterStateSubscription ??= FlutterBluePlus.adapterState.listen((state) {
-        if (state != BluetoothAdapterState.on) {
-          // Pop the current route if Bluetooth is off
-          navigator?.pop();
-        }
-      });
-    }
-  }
-
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    super.didPop(route, previousRoute);
-    // Cancel the subscription when the route is popped
-    _adapterStateSubscription?.cancel();
-    _adapterStateSubscription = null;
   }
 }

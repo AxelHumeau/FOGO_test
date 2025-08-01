@@ -5,8 +5,8 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import '../utils/snackbar.dart';
 
-class BluetoothOffScreen extends StatelessWidget {
-  const BluetoothOffScreen({Key? key, this.adapterState}) : super(key: key);
+class BluetoothOffDialog extends StatelessWidget {
+  const BluetoothOffDialog({Key? key, this.adapterState}) : super(key: key);
 
   final BluetoothAdapterState? adapterState;
 
@@ -47,19 +47,17 @@ class BluetoothOffScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
-      key: Snackbar.snackBarKeyA,
-      child: Scaffold(
+    return PopScope(
+      canPop: false,
+      child: AlertDialog(
         backgroundColor: Colors.lightBlue,
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              buildBluetoothOffIcon(context),
-              buildTitle(context),
-              if (Platform.isAndroid) buildTurnOnButton(context),
-            ],
-          ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            buildBluetoothOffIcon(context),
+            buildTitle(context),
+            if (Platform.isAndroid) buildTurnOnButton(context),
+          ],
         ),
       ),
     );
