@@ -1,9 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_blue_plus_example/blocs/bluetooth_device_connection_cubit.dart';
 
-class SystemDeviceTile extends StatefulWidget {
+class SystemDeviceTile extends StatelessWidget {
   final BluetoothDevice device;
   final VoidCallback onOpen;
   final VoidCallback onConnect;
@@ -16,44 +16,21 @@ class SystemDeviceTile extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SystemDeviceTile> createState() => _SystemDeviceTileState();
-}
-
-class _SystemDeviceTileState extends State<SystemDeviceTile> {
-  BluetoothConnectionState _connectionState = BluetoothConnectionState.disconnected;
-
-  late StreamSubscription<BluetoothConnectionState> _connectionStateSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _connectionStateSubscription = widget.device.connectionState.listen((state) {
-      _connectionState = state;
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _connectionStateSubscription.cancel();
-    super.dispose();
-  }
-
-  bool get isConnected {
-    return _connectionState == BluetoothConnectionState.connected;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(widget.device.platformName),
-      subtitle: Text(widget.device.remoteId.str),
-      trailing: ElevatedButton(
-        child: isConnected ? const Text('OPEN') : const Text('CONNECT'),
-        onPressed: isConnected ? widget.onOpen : widget.onConnect,
+    return BlocProvider(
+      create: (context) => BluetoothDeviceConnectionCubit(device),
+      child: ListTile(
+        title: Text(device.platformName),
+        subtitle: Text(device.remoteId.str),
+        trailing: BlocSelector<BluetoothDeviceConnectionCubit, BluetoothConnectionState, bool>(
+          selector: (state) => state == BluetoothConnectionState.connected,
+          builder: (context, isConnected) {
+            return ElevatedButton(
+              child: isConnected ? const Text('OPEN') : const Text('CONNECT'),
+              onPressed: isConnected ? onOpen : onConnect,
+            );
+          },
+        ),
       ),
     );
   }
