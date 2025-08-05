@@ -12,16 +12,16 @@ class BluetoothDevicesScanCanceled extends BluetoothDevicesScanEvent {}
 
 class BluetoothDevicesScanReloaded extends BluetoothDevicesScanEvent {}
 
-class BluetoothDevicesScanResultsUpdated extends BluetoothDevicesScanEvent {
+class _BluetoothDevicesScanResultsUpdated extends BluetoothDevicesScanEvent {
   final List<ScanResult> scanResults;
 
-  BluetoothDevicesScanResultsUpdated(this.scanResults);
+  _BluetoothDevicesScanResultsUpdated(this.scanResults);
 }
 
-class BluetoothDevicesScanStatusUpdated extends BluetoothDevicesScanEvent {
+class _BluetoothDevicesScanStatusUpdated extends BluetoothDevicesScanEvent {
   final bool isScanning;
 
-  BluetoothDevicesScanStatusUpdated(this.isScanning);
+  _BluetoothDevicesScanStatusUpdated(this.isScanning);
 }
 
 class BluetoothDevicesScanBloc
@@ -31,13 +31,13 @@ class BluetoothDevicesScanBloc
 
   BluetoothDevicesScanBloc() : super(BluetoothDevicesScanState()) {
     _scanResultsSubscription = FlutterBluePlus.scanResults.listen((results) {
-      add(BluetoothDevicesScanResultsUpdated(results));
+      add(_BluetoothDevicesScanResultsUpdated(results));
     }, onError: (e) {
       Snackbar.show(ABC.b, prettyException("Scan Error:", e), success: false);
     });
 
     _isScanningSubscription = FlutterBluePlus.isScanning.listen((scaningState) {
-      add(BluetoothDevicesScanStatusUpdated(scaningState));
+      add(_BluetoothDevicesScanStatusUpdated(scaningState));
     });
 
     on<BluetoothDevicesScanStarted>((event, emit) async {
@@ -78,12 +78,12 @@ class BluetoothDevicesScanBloc
       emit(BluetoothDevicesScanState.copyFrom(state));
     });
 
-    on<BluetoothDevicesScanResultsUpdated>((event, emit) {
+    on<_BluetoothDevicesScanResultsUpdated>((event, emit) {
       state.scanResults = event.scanResults;
       emit(BluetoothDevicesScanState.copyFrom(state));
     });
 
-    on<BluetoothDevicesScanStatusUpdated>((event, emit) {
+    on<_BluetoothDevicesScanStatusUpdated>((event, emit) {
       state.isScanning = event.isScanning;
       emit(BluetoothDevicesScanState.copyFrom(state));
     });
