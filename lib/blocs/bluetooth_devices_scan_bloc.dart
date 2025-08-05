@@ -44,7 +44,8 @@ class BluetoothDevicesScanBloc
       try {
         // `withServices` is required on iOS for privacy purposes, ignored on android.
         var withServices = [Guid("180f")]; // Battery Level Service
-        state.systemDevices = await FlutterBluePlus.systemDevices(withServices);
+        final systemDevices = await FlutterBluePlus.systemDevices(withServices);
+        emit(state.copyWith(systemDevices: systemDevices));
       } catch (e) {
         Snackbar.show(ABC.b, prettyException("System Devices Error:", e),
             success: false);
@@ -57,7 +58,6 @@ class BluetoothDevicesScanBloc
             success: false);
         print(e);
       }
-      emit(BluetoothDevicesScanState.copyFrom(state));
     });
 
     on<BluetoothDevicesScanCanceled>((event, emit) {
@@ -68,24 +68,20 @@ class BluetoothDevicesScanBloc
             success: false);
         print(e);
       }
-      emit(BluetoothDevicesScanState.copyFrom(state));
     });
 
     on<BluetoothDevicesScanReloaded>((event, emit) {
       if (state.isScanning == false) {
         FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
       }
-      emit(BluetoothDevicesScanState.copyFrom(state));
     });
 
     on<_BluetoothDevicesScanResultsUpdated>((event, emit) {
-      state.scanResults = event.scanResults;
-      emit(BluetoothDevicesScanState.copyFrom(state));
+      emit(state.copyWith(scanResults: event.scanResults));
     });
 
     on<_BluetoothDevicesScanStatusUpdated>((event, emit) {
-      state.isScanning = event.isScanning;
-      emit(BluetoothDevicesScanState.copyFrom(state));
+      emit(state.copyWith(isScanning: event.isScanning));
     });
   }
 
@@ -98,15 +94,25 @@ class BluetoothDevicesScanBloc
 }
 
 class BluetoothDevicesScanState {
-  BluetoothDevicesScanState();
+  final List<BluetoothDevice> systemDevices;
+  final List<ScanResult> scanResults;
+  final bool isScanning;
 
-  BluetoothDevicesScanState.copyFrom(BluetoothDevicesScanState state) {
-    systemDevices = List.from(state.systemDevices);
-    scanResults = List.from(state.scanResults);
-    isScanning = state.isScanning;
+  BluetoothDevicesScanState({
+    this.systemDevices = const [],
+    this.scanResults = const [],
+    this.isScanning = false,
+  });
+
+  BluetoothDevicesScanState copyWith({
+    List<BluetoothDevice>? systemDevices,
+    List<ScanResult>? scanResults,
+    bool? isScanning,
+  }) {
+    return BluetoothDevicesScanState(
+      systemDevices: systemDevices ?? this.systemDevices,
+      scanResults: scanResults ?? this.scanResults,
+      isScanning: isScanning ?? this.isScanning,
+    );
   }
-
-  List<BluetoothDevice> systemDevices = [];
-  List<ScanResult> scanResults = [];
-  bool isScanning = false;
 }
