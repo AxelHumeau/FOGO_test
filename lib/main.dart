@@ -5,8 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:flutter_blue_plus_example/cubits/bluetooth_adapter_cubit.dart';
-import 'package:flutter_blue_plus_example/blocs/bluetooth_devices_scan_bloc.dart';
+import 'package:fogo_technical_test/cubits/bluetooth_adapter_cubit.dart';
+import 'package:fogo_technical_test/blocs/bluetooth_devices_scan_bloc.dart';
 
 import 'widgets/bluetooth_off_dialog.dart';
 import 'screens/scan_screen.dart';

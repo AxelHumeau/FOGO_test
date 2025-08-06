@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:flutter_blue_plus_example/blocs/bluetooth_property_bloc.dart';
+import 'package:fogo_technical_test/blocs/bluetooth_property_bloc.dart';
 
 /// Base class for property tiles that display Bluetooth characteristics or descriptors.
 /// It provides common functionality for displaying UUIDs, values, and buttons for reading and writing properties.

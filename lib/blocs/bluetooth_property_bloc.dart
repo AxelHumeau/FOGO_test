@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:flutter_blue_plus_example/utils/snackbar.dart';
+import 'package:fogo_technical_test/utils/snackbar.dart';
 
 /// Events for [BluetoothPropertyBloc]
 /// Usable events types are:
