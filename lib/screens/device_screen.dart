@@ -5,8 +5,8 @@ import 'package:flutter_blue_plus_example/blocs/bluetooth_device_info_bloc.dart'
 import 'package:flutter_blue_plus_example/widgets/spinner.dart';
 
 import '../widgets/service_tile.dart';
-import '../widgets/characteristic_tile.dart';
-import '../widgets/descriptor_tile.dart';
+import '../widgets/property_tiles/characteristic_tile.dart';
+import '../widgets/property_tiles/descriptor_tile.dart';
 import '../utils/snackbar.dart';
 
 class DeviceScreen extends StatelessWidget {
