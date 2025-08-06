@@ -3,6 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_blue_plus_example/blocs/bluetooth_property_bloc.dart';
 
+/// Base class for property tiles that display Bluetooth characteristics or descriptors.
+/// It provides common functionality for displaying UUIDs, values, and buttons for reading and writing properties.
+///
+/// This class is generic and can be used for both [BluetoothCharacteristic] and [BluetoothDescriptor] as the generic type [T].
+/// It throws an [ArgumentError] if the property type is unsupported.
+///
+/// The widget rebuilds when the property changes.
+///
+/// To use this class, extend it and implement the [buildTile] method to define how the tile should be displayed.
 abstract class PropertyTile<T> extends StatelessWidget {
   PropertyTile({super.key, required this.property}) {
     if (property is! BluetoothCharacteristic &&
@@ -68,6 +77,7 @@ abstract class PropertyTile<T> extends StatelessWidget {
     );
   }
 
+  /// Builds the tile for the property.
   Widget buildTile(BuildContext context, T property, List<int> value);
 
   @override

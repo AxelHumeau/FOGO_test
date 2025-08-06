@@ -5,28 +5,55 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_blue_plus_example/utils/snackbar.dart';
 
+/// Events for [BluetoothPropertyBloc]
+/// Usable events types are:
+/// - [BluetoothPropertyReadPressed]: Read the property value.
+/// - [BluetoothPropertyWritePressed]: Write a value to the property.
+/// - [BluetoothPropertySubscribePressed]: Subscribe to notifications for the property.
 sealed class BluetoothPropertyEvent {}
 
+/// Internal event to update the property value.
 class _BluetoothPropertyValueUpdated extends BluetoothPropertyEvent {
   final List<int> value;
 
   _BluetoothPropertyValueUpdated(this.value);
 }
 
+/// Internal event to update the characteristic property.
 class _BluetoothPropertyCharacteristicUpdated extends BluetoothPropertyEvent {}
 
+/// Event to read the property value.
 class BluetoothPropertyReadPressed extends BluetoothPropertyEvent {}
 
+/// Event to write a value to the property.
 class BluetoothPropertyWritePressed extends BluetoothPropertyEvent {}
 
+/// Event to subscribe to notifications for the characteristic.
+/// This event is only applicable for [BluetoothCharacteristic].
+///
+/// An assertion error will be thrown if this event is used for a [BluetoothPropertyBloc] with [T] as [BluetoothDescriptor].
 class BluetoothPropertySubscribePressed extends BluetoothPropertyEvent {}
 
+/// [Bloc] to manage Bluetooth property operations.
+/// It provides a tuple of the property and its last value to the UI.
+///
+/// The property of type [T] can be either a [BluetoothCharacteristic] or a [BluetoothDescriptor].
+/// This bloc is intended as a generic handler for both types of properties.
+///
+/// Events of type [BluetoothPropertyEvent] can be used with the bloc.
+/// Check [BluetoothPropertyEvent] for the list of events.
 class BluetoothPropertyBloc<T>
     extends Bloc<BluetoothPropertyEvent, (T, List<int>)> {
   late StreamSubscription<List<int>> _lastValueSubscription;
   final T property;
   late final String propertyType;
 
+  /// Creates a new instance of [BluetoothPropertyBloc].
+  /// Initializes the last value subscription based on the type of property.
+  /// Throws an [ArgumentError] if the property type is unsupported.
+  /// The property must be either a [BluetoothCharacteristic] or a [BluetoothDescriptor].
+  ///
+  /// See [BluetoothPropertyEvent] for the list of events that can be used with this bloc.
   BluetoothPropertyBloc(this.property) : super((property, [])) {
     switch (property) {
       case BluetoothCharacteristic c:

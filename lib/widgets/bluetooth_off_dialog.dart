@@ -5,6 +5,8 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import '../utils/snackbar.dart';
 
+/// Dialog to show when Bluetooth is turned off or not available.
+/// The dialog cannot be dismissed by the user as long as Bluetooth is off.
 class BluetoothOffDialog extends StatelessWidget {
   const BluetoothOffDialog({Key? key, this.adapterState}) : super(key: key);
 

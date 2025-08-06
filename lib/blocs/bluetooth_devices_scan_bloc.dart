@@ -4,31 +4,50 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_blue_plus_example/utils/snackbar.dart';
 
+/// Events for [BluetoothDevicesScanBloc]
+/// Usable events types are:
+/// - [BluetoothDevicesScanStarted]: Start scanning for Bluetooth devices.
+/// - [BluetoothDevicesScanCanceled]: Cancel the ongoing scan.
+/// - [BluetoothDevicesScanReloaded]: Reload the scan results.
 sealed class BluetoothDevicesScanEvent {}
 
+/// Event to start scanning for Bluetooth devices.
 class BluetoothDevicesScanStarted extends BluetoothDevicesScanEvent {}
 
+/// Event to cancel the ongoing scan.
 class BluetoothDevicesScanCanceled extends BluetoothDevicesScanEvent {}
 
+/// Event to reload the scan results.
 class BluetoothDevicesScanReloaded extends BluetoothDevicesScanEvent {}
 
+/// Internal event to update the scan results.
 class _BluetoothDevicesScanResultsUpdated extends BluetoothDevicesScanEvent {
   final List<ScanResult> scanResults;
 
   _BluetoothDevicesScanResultsUpdated(this.scanResults);
 }
 
+/// Internal event to update the scanning status.
 class _BluetoothDevicesScanStatusUpdated extends BluetoothDevicesScanEvent {
   final bool isScanning;
 
   _BluetoothDevicesScanStatusUpdated(this.isScanning);
 }
 
+/// [Bloc] to manage Bluetooth device scanning.
+/// It provides a [BluetoothDevicesScanState] to the UI to reflect the current state of the scan.
+///
+/// Events of type [BluetoothDevicesScanEvent] can be used with the bloc.
+/// Check [BluetoothDevicesScanEvent] for the list of events.
 class BluetoothDevicesScanBloc
     extends Bloc<BluetoothDevicesScanEvent, BluetoothDevicesScanState> {
   late StreamSubscription<List<ScanResult>> _scanResultsSubscription;
   late StreamSubscription<bool> _isScanningSubscription;
 
+  /// Creates a new instance of [BluetoothDevicesScanBloc].
+  /// Initializes the subscriptions to the scan results and scanning status.
+  ///
+  /// See [BluetoothDevicesScanEvent] for the list of events that can be used with this bloc.
   BluetoothDevicesScanBloc() : super(BluetoothDevicesScanState()) {
     _scanResultsSubscription = FlutterBluePlus.scanResults.listen((results) {
       add(_BluetoothDevicesScanResultsUpdated(results));
@@ -93,6 +112,8 @@ class BluetoothDevicesScanBloc
   }
 }
 
+/// State for [BluetoothDevicesScanBloc]
+/// It holds the list of system devices, scan results, and scanning status.
 class BluetoothDevicesScanState {
   final List<BluetoothDevice> systemDevices;
   final List<ScanResult> scanResults;

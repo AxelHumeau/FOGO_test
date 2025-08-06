@@ -1,16 +1,9 @@
-# flutter_blue_plus_example
+# FOGO Technical Test
 
-Demonstrates how to use the flutter_blue_plus plugin.
+This flutter app is based on the [flutter_blue_plus](https://pub.dev/packages/flutter_blue_plus) exemple app. Although the state management has been migrated from Stateful widgets to Blocs and Cubits, using the [bloc](https://pub.dev/packages/bloc) and [flutter_bloc](https://pub.dev/packages/flutter_bloc) packages.
 
-## Getting Started
+Other differences include:
+ - the bluetooth off screen no longer being triggered by an navigator observer but now by a cubit
+ - the bluetooth off screen being replaced by a undismissable dialog
+ - a generic way to handle BluetoothDescriptor and BluetoothCharacteristic as the related widgets had a lot of shared code
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

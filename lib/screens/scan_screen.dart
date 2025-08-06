@@ -11,6 +11,7 @@ import '../widgets/system_device_tile.dart';
 import '../widgets/scan_result_tile.dart';
 import '../utils/extra.dart';
 
+/// Screen to scan for Bluetooth devices and display them.
 class ScanScreen extends StatelessWidget {
   const ScanScreen({Key? key}) : super(key: key);
 

@@ -5,8 +5,16 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_blue_plus_example/utils/extra.dart';
 import 'package:flutter_blue_plus_example/utils/snackbar.dart';
 
+/// Events for [BluetoothDeviceInfoBloc]
+/// Usable events types are:
+/// - [BluetoothDeviceInfoConnectPressed]: Connect to the device.
+/// - [BluetoothDeviceInfoCancelPressed]: Cancel the connection.
+/// - [BluetoothDeviceInfoDisconnectPressed]: Disconnect from the device.
+/// - [BluetoothDeviceInfoDiscoverServicesPressed]: Discover services of the device.
+/// - [BluetoothDeviceInfoRequestMtuPressed]: Request the MTU size of the device
 sealed class BluetoothDeviceInfoEvent {}
 
+/// Internal event to update the connection state, services, and RSSI
 class _BluetoothDeviceInfoConnectionStateUpdated
     extends BluetoothDeviceInfoEvent {
   final BluetoothConnectionState connectionState;
@@ -17,18 +25,21 @@ class _BluetoothDeviceInfoConnectionStateUpdated
       this.connectionState, this.services, this.rssi);
 }
 
+/// Internal event to update the MTU size
 class _BluetoothDeviceInfoMtuUpdated extends BluetoothDeviceInfoEvent {
   final int mtuSize;
 
   _BluetoothDeviceInfoMtuUpdated(this.mtuSize);
 }
 
+/// Internal event to update the isConnecting state
 class _BluetoothDeviceInfoIsConnectingUpdated extends BluetoothDeviceInfoEvent {
   final bool isConnecting;
 
   _BluetoothDeviceInfoIsConnectingUpdated(this.isConnecting);
 }
 
+/// Internal event to update the isDisconnecting state
 class _BluetoothDeviceInfoIsDisconnectingUpdated
     extends BluetoothDeviceInfoEvent {
   final bool isDisconnecting;
@@ -36,22 +47,27 @@ class _BluetoothDeviceInfoIsDisconnectingUpdated
   _BluetoothDeviceInfoIsDisconnectingUpdated(this.isDisconnecting);
 }
 
+/// Internal event to update the isDiscoveringServices state
 class _BluetoothDeviceInfoIsDiscoverServicesUpdated
     extends BluetoothDeviceInfoEvent {
   final bool isDiscoveringServices;
   _BluetoothDeviceInfoIsDiscoverServicesUpdated(this.isDiscoveringServices);
 }
 
+/// Internal event to update the services list
 class _BluetoothDeviceInfoServicesUpdated extends BluetoothDeviceInfoEvent {
   final List<BluetoothService> services;
 
   _BluetoothDeviceInfoServicesUpdated(this.services);
 }
 
+/// Event to connect to the Bluetooth device
 class BluetoothDeviceInfoConnectPressed extends BluetoothDeviceInfoEvent {}
 
+/// Event to cancel the connection to the Bluetooth device
 class BluetoothDeviceInfoCancelPressed extends BluetoothDeviceInfoEvent {}
 
+/// Event to disconnect from the Bluetooth device
 class BluetoothDeviceInfoDisconnectPressed extends BluetoothDeviceInfoEvent {}
 
 class BluetoothDeviceInfoDiscoverServicesPressed
@@ -59,6 +75,11 @@ class BluetoothDeviceInfoDiscoverServicesPressed
 
 class BluetoothDeviceInfoRequestMtuPressed extends BluetoothDeviceInfoEvent {}
 
+/// [Bloc] to manage Bluetooth device information and connection state.
+/// It provide a [BluetoothDeviceInfoState] to the UI to reflect the current state.
+///
+/// Events of type [BluetoothDeviceInfoEvent] can be used with the bloc.
+/// Check [BluetoothDeviceInfoEvent] for the list of events.
 class BluetoothDeviceInfoBloc
     extends Bloc<BluetoothDeviceInfoEvent, BluetoothDeviceInfoState> {
   late final StreamSubscription<BluetoothConnectionState>
@@ -68,6 +89,10 @@ class BluetoothDeviceInfoBloc
   late final StreamSubscription<int> _mtuSubscription;
   final BluetoothDevice device;
 
+  /// Creates a new instance of [BluetoothDeviceInfoBloc] with the given [device].
+  /// Initializes the subscriptions to the device's connection state, MTU, and other properties.
+  ///
+  /// See [BluetoothDeviceInfoEvent] for the list of events that can be used with this bloc.
   BluetoothDeviceInfoBloc(this.device) : super(BluetoothDeviceInfoState()) {
     _initSubscriptions();
 
@@ -202,6 +227,8 @@ class BluetoothDeviceInfoBloc
   }
 }
 
+/// State for [BluetoothDeviceInfoBloc]
+/// It holds the current connection state, services, RSSI, MTU size, and flags for discovering services, connecting, and disconnecting.
 class BluetoothDeviceInfoState {
   final int? rssi;
   final int? mtuSize;

@@ -5,6 +5,8 @@ import 'package:flutter_blue_plus_example/blocs/bluetooth_property_bloc.dart';
 import 'package:flutter_blue_plus_example/widgets/property_tiles/descriptor_tile.dart';
 import 'package:flutter_blue_plus_example/widgets/property_tiles/property_tile.dart';
 
+/// Tile to display a Bluetooth characteristic.
+/// It extends [PropertyTile] to provide a specific implementation for Bluetooth characteristics.
 class CharacteristicTile extends PropertyTile<BluetoothCharacteristic> {
   final List<DescriptorTile> descriptorTiles;
 

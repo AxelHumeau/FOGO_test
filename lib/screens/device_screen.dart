@@ -9,6 +9,7 @@ import '../widgets/property_tiles/characteristic_tile.dart';
 import '../widgets/property_tiles/descriptor_tile.dart';
 import '../utils/snackbar.dart';
 
+/// Screen to display detailed information about a Bluetooth device.
 class DeviceScreen extends StatelessWidget {
   final BluetoothDevice device;
 
